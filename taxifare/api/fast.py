@@ -2,6 +2,9 @@ import pandas as pd
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from taxifare.ml_logic.registry import load_model
+from taxifare.ml_logic.preprocessor import preprocess_features
+
 app = FastAPI()
 
 # Allowing all middleware is optional, but good practice for dev purposes
@@ -28,11 +31,29 @@ def predict(
     Assumes `pickup_datetime` is provided as a string by the user in "%Y-%m-%d %H:%M:%S" format
     Assumes `pickup_datetime` implicitly refers to the "US/Eastern" timezone (as any user in New York City would naturally write)
     """
-    pass  # YOUR CODE HERE
+  # $CHA_BEGIN
+
+    # 💡 Optional trick instead of writing each column name manually:
+    # locals() gets us all of our arguments back as a dictionary
+    # https://docs.python.org/3/library/functions.html#locals
+    X_pred = pd.DataFrame(locals(), index=[0])
+
+    # Convert to US/Eastern TZ-aware!
+    X_pred['pickup_datetime'] = pd.Timestamp(pickup_datetime, tz='US/Eastern')
+
+    model = app.state.model
+    assert model is not None
+
+    X_processed = preprocess_features(X_pred)
+    y_pred = model.predict(X_processed)
+
+    # ⚠️ fastapi only accepts simple Python data types as a return value
+    # among them dict, list, str, int, float, bool
+    # in order to be able to convert the api response to JSON
+    return dict(fare_amount=float(y_pred))
+    # $CHA_END
 
 
 @app.get("/")
 def root():
-    return {
-    'greeting': 'Hello'
-    }
+    return dict(greeting="Hello")
