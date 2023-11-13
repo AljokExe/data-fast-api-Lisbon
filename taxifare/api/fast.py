@@ -6,6 +6,7 @@ from taxifare.ml_logic.registry import load_model
 from taxifare.ml_logic.preprocessor import preprocess_features
 
 app = FastAPI()
+app.state.model=load_model("Production")
 
 # Allowing all middleware is optional, but good practice for dev purposes
 app.add_middleware(
