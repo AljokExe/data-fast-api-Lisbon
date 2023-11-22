@@ -12,6 +12,9 @@ from taxifare.ml_logic.preprocessor import preprocess_features
 from taxifare.ml_logic.registry import load_model, save_model, save_results
 from taxifare.ml_logic.registry import mlflow_run, mlflow_transition_model
 
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
 def preprocess(min_date:str = '2009-01-01', max_date:str = '2015-01-01') -> None:
     """
     - Query the raw dataset from Le Wagon's BigQuery dataset
