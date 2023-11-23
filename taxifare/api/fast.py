@@ -2,8 +2,11 @@ import pandas as pd
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+# $WIPE_BEGIN
+
 from taxifare.ml_logic.registry import load_model
 from taxifare.ml_logic.preprocessor import preprocess_features
+# $WIPE_END
 
 app = FastAPI()
 app.state.model=load_model("Production")
@@ -32,7 +35,7 @@ def predict(
     Assumes `pickup_datetime` is provided as a string by the user in "%Y-%m-%d %H:%M:%S" format
     Assumes `pickup_datetime` implicitly refers to the "US/Eastern" timezone (as any user in New York City would naturally write)
     """
-  # $CHA_BEGIN
+    # $CHA_BEGIN
 
     # 💡 Optional trick instead of writing each column name manually:
     # locals() gets us all of our arguments back as a dictionary
