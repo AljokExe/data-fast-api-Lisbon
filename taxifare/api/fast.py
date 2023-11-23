@@ -9,7 +9,7 @@ from taxifare.ml_logic.preprocessor import preprocess_features
 # $WIPE_END
 
 app = FastAPI()
-app.state.model=load_model("Production")
+app.state.model=load_model()
 
 # Allowing all middleware is optional, but good practice for dev purposes
 app.add_middleware(
